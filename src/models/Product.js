@@ -7,11 +7,12 @@ const ProductSchema = new mongoose.Schema(
   {
     dateCreated: { type: Date, default: Date.now },
     name: String,
+    description: String,
     price: Number,
-    stock: Number,
+    qrcode: String,
     thumbnail: String,
     category: String,
-    lastModification: Date,
+    lastTransaction: Date,
     lastUser: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",

@@ -1,5 +1,6 @@
 const Product = require("../models/Product");
 const User = require("../models/User");
+const History = require("../models/History");
 
 module.exports = {
   async addProduct(req, res) {
@@ -24,8 +25,14 @@ module.exports = {
         lastUser: user._id,
         user: user._id,
       });
-      await product.populate("lastUser").populate("user").execPopulate();
-      return res.json(product);
+      await History.create({
+        user: user._id,
+        product: product._id,
+      });
+      // await product.populate("lastUser").populate("user").execPopulate();
+      // await history.populate("user").populate("product").execPopulate();
+
+      return res.sendStatus(200);
     } catch (error) {
       return res.status(400).json({ message: error });
     }
@@ -99,6 +106,11 @@ module.exports = {
     const { productId } = req.params;
     try {
       const product = await Product.findByIdAndDelete(productId);
+      await History.create({
+        user: user._id,
+        product: product._id,
+        action: "DELETE",
+      });
       req.filename = product.thumbnail;
       next();
     } catch (error) {
@@ -131,6 +143,11 @@ module.exports = {
           else if (!data) return res.status(500);
         }
       );
+      await History.create({
+        user: user._id,
+        product: product._id,
+        action: "UPDATE",
+      });
       await product.populate("lastUser").populate("user").execPopulate();
       return res.json(product);
     } catch (error) {
@@ -161,6 +178,11 @@ module.exports = {
           else if (!data) return res.status(500);
         }
       );
+      await History.create({
+        user: user._id,
+        product: product._id,
+        action: "UPDATE",
+      });
       await product.populate("lastUser").populate("user").execPopulate();
       return res.json(product);
     } catch (error) {
