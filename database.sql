@@ -6,6 +6,11 @@ CREATE TYPE roles AS ENUM
   'User', 
   'Viewer');
 
+CREATE TYPE actions as ENUM
+(
+  'Update', 'Delete', 'Create', 'Restock', 'Sold'
+)
+
 CREATE TABLE accounts
 (
   user_id serial PRIMARY KEY,
@@ -27,6 +32,7 @@ CREATE TABLE products
   description VARCHAR(255) NOT NULL,
   price BIGINT NOT NULL,
   qrcode VARCHAR(255) UNIQUE NOT NULL,
+  stock INT NOT NULL,
   thumbnail VARCHAR(255) NOT NULL,
   thumbnail_url VARCHAR(255) NOT NULL,
   category VARCHAR(255) NOT NULL,
@@ -35,9 +41,21 @@ CREATE TABLE products
   created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 
 );
+CREATE TABLE history
+(
+  h_id SERIAL PRIMARY KEY,
+  description VARCHAR(255) NOT NULL,
+  user_action actions NOT NULL DEFAULT 'Create',
+  last_user INT references accounts (user_id) NOT NULL,
+  last_transact TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
 
 
+
+
+ADD COLUMN added BOOLEAN DEFAULT FALSE,
+ADD COLUMN count INT DEFAULT 0;
 
 
 -- DROP TABLE IF EXISTS products 

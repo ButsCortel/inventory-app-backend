@@ -19,19 +19,21 @@ module.exports = {
         description,
         price,
         qrcode,
+        stock,
         category,
         last_user,
       } = req.body;
       const { filename } = req.file;
       const thumbnail_url = `${process.env.BACKEND}/productImages/${filename}`;
       const newProduct = await pool.query(
-        "INSERT INTO products (creator, name, description, price, qrcode, thumbnail, thumbnail_url, category, last_user) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *",
+        "INSERT INTO products (creator, name, description, price, qrcode, stock, thumbnail, thumbnail_url, category, last_user) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9, $10) RETURNING *",
         [
           creator,
           name,
           description,
           price,
           qrcode,
+          stock,
           filename,
           thumbnail_url,
           category,
